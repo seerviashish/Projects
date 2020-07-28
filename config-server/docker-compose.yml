@@ -1,0 +1,15 @@
+version: '3'
+services:
+  config-server:
+    image: config-server:v1.0.0
+    ports:
+      - 8085:8085
+    env_file:
+      - config.env
+    restart: always
+    healthcheck:
+      test: "exit 0"
+    volumes:
+      - config-service-data:/project
+volumes:
+  config-service-data:

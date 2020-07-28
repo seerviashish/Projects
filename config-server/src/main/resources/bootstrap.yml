@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: config-server
+  security:
+    user:
+      name: ProjectLearn
+      password: ProjectLearn321
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://ashishseervi17@bitbucket.org/Marsbase/project-config.git
+          username: ${GIT_USER}
+          password: ${GIT_PASS}
+          label: project-master
+          force-pull: true
+          refreshRate: 0
+          deleteUntrackedBranches: true
+          ignoreLocalSshSettings: true
+management:
+  endpoint:
+    web:
+      exposure:
+        include: "health, info"
+configServer:
+  debug: false
+server:
+  port: 8085
+  error:
+    whitelabel:
+      enabled: true
+    include-exception: false
+    include-stacktrace: never
+    path: /error
+  tomcat:
+    basedir: ${LOG_PATH}/accesslog
+    accesslog:
+      enabled: true
+      file-date-format: .yyyy-MM-dd
+      pattern: combined
+      prefix: config-server
+      rename-on-rotate: false
+      rotate: true
+      suffix: .log
+info:
+  app:
+    name: Config-server
+    env: production
+    version: V1.0.0-SNAPSHOT
+    encoding: UTF-8
+    java:
+      source: 11
+      target: 11
+logging:
+  level:
+    ROOT: 'DEBUG'
+  config: classpath:logback-spring.xml
