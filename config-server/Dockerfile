@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:14
 RUN mkdir -p /project
 ENV LOG_PATH /project/
 RUN ln -sf /dev/stdout /project/config-stdout.log
