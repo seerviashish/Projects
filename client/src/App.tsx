@@ -1,28 +1,18 @@
 import React from "react";
 import "./App.css";
-import { Trans } from "@lingui/react";
+import { Theme, createStyles, WithStyles, withStyles } from "@material-ui/core";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>
-          <Trans id="Hi" />
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+type Props = {};
+type State = {};
+
+const styles = (theme: Theme) => createStyles({});
+
+class App extends React.Component<Props & WithStyles<typeof styles>, State> {
+  readonly state: State = {};
+
+  render() {
+    return <div className="main"></div>;
+  }
 }
 
-export default App;
+export default withStyles(styles)(App);
