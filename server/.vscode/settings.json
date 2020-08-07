@@ -1,0 +1,19 @@
+{
+  "window.zoomLevel": 1,
+  "editor.minimap.enabled": true,
+  "editor.codeLens": true,
+  "editor.wordWrapColumn": 80,
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "editor.renderIndentGuides": true,
+  "editor.tabSize": 2,
+  "git.autofetch": true,
+  "git.enableSmartCommit": true,
+  "prettier.printWidth": 80,
+  "prettier.ignorePath": ".prettierignore",
+  "npm.autoDetect": "on",
+  "workbench.iconTheme": "vscode-icons",
+  "vsicons.presets.jsOfficial": true,
+  "path-intellisense.absolutePathToWorkspace": true
+}

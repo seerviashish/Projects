@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  message-server:
+    build: .
+    image: message-server
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/node-boilerplate
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    volumes:
+      - .:/usr/src/message-server
+    networks:
+      - message-server-network
+
+  mongodb:
+    image: mongo:4.2.1-bionic
+    ports:
+      - "27017:27017"
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - message-server-network
+
+volumes:
+  dbdata:
+
+networks:
+  message-server-network:
+    driver: bridge

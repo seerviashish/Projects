@@ -1,0 +1,42 @@
+[8/8/2020, 1:18:27 AM] error: uncaughtException: Cannot find module '../../docs/swaggerDef'
+Error: Cannot find module '../../docs/swaggerDef'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:636:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:562:25)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/Users/ashishchaudhary/Desktop/Prep/Projects/server/src/routes/v1/docs.route.js:4:27)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:593:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:585:3)
+    at Module.require (internal/modules/cjs/loader.js:692:17)
+    at require (internal/modules/cjs/helpers.js:25:18)
+    at Object.<anonymous> (/Users/ashishchaudhary/Desktop/Prep/Projects/server/src/routes/v1/index.js:4:19)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)
+    at Module.load (internal/modules/cjs/loader.js:653:32)
+[8/8/2020, 1:18:46 AM] info: Connected to MongoDB
+[8/8/2020, 1:18:46 AM] info: Listening to port 3000
+[8/8/2020, 1:18:48 AM] info: Connected to email server
+[8/8/2020, 1:18:59 AM] info: Connected to MongoDB
+[8/8/2020, 1:18:59 AM] info: Listening to port 3000
+[8/8/2020, 1:19:01 AM] info: Connected to email server
+[8/8/2020, 1:19:13 AM] error: Not found
+[8/8/2020, 1:19:13 AM] error: GET / 404 - 8.093 ms - message: Not found
+[8/8/2020, 1:19:40 AM] info: Connected to MongoDB
+[8/8/2020, 1:19:40 AM] info: Listening to port 4000
+[8/8/2020, 1:19:42 AM] info: Connected to email server
+[8/8/2020, 1:19:53 AM] error: Not found
+[8/8/2020, 1:19:53 AM] error: GET /v1 404 - 8.226 ms - message: Not found
+[8/8/2020, 1:19:54 AM] error: Not found
+[8/8/2020, 1:19:54 AM] error: GET /favicon.ico 404 - 1.695 ms - message: Not found
+[8/8/2020, 1:19:59 AM] error: Not found
+[8/8/2020, 1:19:59 AM] error: GET /v1/login 404 - 1.676 ms - message: Not found
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs 301 - 1.919 ms
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs/ 200 - 2.961 ms
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs/swagger-ui.css 200 - 4.044 ms
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs/swagger-ui-init.js 200 - 0.775 ms
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs/swagger-ui-standalone-preset.js 200 - 4.561 ms
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs/swagger-ui-bundle.js 200 - 1.628 ms
+[8/8/2020, 1:20:28 AM] info: GET /v1/docs/favicon-32x32.png 200 - 1.103 ms

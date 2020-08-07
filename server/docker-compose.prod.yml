@@ -1,0 +1,6 @@
+version: "3"
+
+services:
+  message-server:
+    container_name: message-server-prod
+    command: yarn start
