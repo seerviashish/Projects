@@ -40,6 +40,25 @@ const userSchema = mongoose.Schema(
       enum: roles,
       default: 'user',
     },
+    profileUrl: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 500,
+    },
+    about: {
+      type: String,
+      required: false,
+      trim: true,
+      maxlength: 50,
+    },
+    balance: {
+      type: Number,
+      min: 0,
+      max: 15000,
+      default: 0,
+      required: false,
+    },
   },
   {
     timestamps: true,
