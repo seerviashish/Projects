@@ -10,8 +10,18 @@ const styles = (theme: Theme) => createStyles({});
 class App extends React.Component<Props & WithStyles<typeof styles>, State> {
   readonly state: State = {};
 
+  componentDidMount() {}
+
+  componentWillUnmount() {}
+
   render() {
-    return <div className="main"></div>;
+    return (
+      <div className="main">
+        <div className="middle">
+          <div className="small"></div>
+        </div>
+      </div>
+    );
   }
 }
 

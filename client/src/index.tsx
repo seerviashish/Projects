@@ -5,11 +5,14 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import AppThemeProvider from "./utils/theme";
 import LocaleProvider from "./utils/i18n";
+import SessionProvider from "./utils/session/SessionProvider";
 
 ReactDOM.render(
   <AppThemeProvider>
     <LocaleProvider>
-      <App />
+      <SessionProvider>
+        <App />
+      </SessionProvider>
     </LocaleProvider>
   </AppThemeProvider>,
   document.getElementById("root")
