@@ -1,9 +1,22 @@
 import React, { ReactNode } from "react";
 
+export type UserDetail = {
+  name: string;
+  email: string;
+  getBalance: () => Promise<any>;
+  isAdmin: () => boolean;
+  canSendMessage: () => boolean;
+  canVideoCall: () => boolean;
+  canCall: () => boolean;
+};
+
 export type SessionDetail = {
   token: string;
   expire: Date;
   clientId: string;
+  locale: string;
+  createdAt: Date;
+  user: UserDetail;
 };
 
 export type SignInDetail = {
@@ -22,6 +35,7 @@ export type SessionContextType = {
   loading: boolean;
   error?: any;
   session?: SessionDetail;
+  isAuthenticated?: () => Promise<any>;
   signIn?: (signInDetail: SignInDetail) => Promise<any>;
   signUp?: (signUpDetail: SignUpDetail) => Promise<any>;
   refreshToken?: () => Promise<any>;
