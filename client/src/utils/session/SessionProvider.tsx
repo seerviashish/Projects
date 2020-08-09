@@ -18,6 +18,10 @@ export type SignUpDetail = {
 };
 
 export type SessionContextType = {
+  resolved: boolean;
+  loading: boolean;
+  error?: any;
+  session?: SessionDetail;
   signIn?: (signInDetail: SignInDetail) => Promise<any>;
   signUp?: (signUpDetail: SignUpDetail) => Promise<any>;
   refreshToken?: () => Promise<any>;
@@ -29,22 +33,34 @@ const defaultContext = {
   signUp: undefined,
   refreshToken: undefined,
   signOut: undefined,
+  loading: true,
+  resolved: false,
+  session: undefined,
 };
 
 const Context = React.createContext<SessionContextType>(defaultContext);
 
 const { Provider, Consumer } = Context;
 
-export { Context, Provider };
+export { Context, Provider, Consumer };
 
 type Props = {
   children: ReactNode;
 };
 
-type State = {};
+type State = {
+  resolved: boolean;
+  loading: boolean;
+};
 
 class SessionProvider extends React.Component<Props, State> {
-  readonly state: State = {};
+  readonly state: State = {
+    resolved: false,
+    loading: true,
+  };
+  componentDidMount() {
+    this.setState({ resolved: true, loading: false });
+  }
   render() {
     return <Provider value={{ ...this.state }}>{this.props.children}</Provider>;
   }
