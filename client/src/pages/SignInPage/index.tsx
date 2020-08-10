@@ -17,7 +17,10 @@ import {
 import AppLogo from "src/components/AppLogo";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Trans } from "@lingui/react";
+import { green, blue } from "@material-ui/core/colors";
+import { SIGN_UP } from "src/constants/routes";
 
 type Props = {};
 
@@ -66,8 +69,9 @@ const styles = (theme: Theme) =>
       "& > *": {
         margin: theme.spacing(2),
         marginTop: "10vh",
-        height: "70vh",
+        paddingBottom: "20px",
         [theme.breakpoints.down("sm")]: {
+          marginTop: "4vh",
           width: "100%",
         },
         [theme.breakpoints.between("sm", "md")]: {
@@ -104,10 +108,74 @@ const styles = (theme: Theme) =>
         width: "50%",
       },
     },
+    buttonAnimation: {
+      width: "65px",
+      borderRadius: "50%",
+      margin: "18px auto",
+      height: "65px",
+      borderColor: `${green[400]} transparent transparent`,
+      border: "5px solid",
+      animation: `$rotatingStart 500ms ${theme.transitions.easing.easeOut},
+       $rotating 1000ms ${theme.transitions.easing.easeOut} 500ms infinite`,
+      "& > span": {
+        opacity: 0,
+        animation: `$fadeIn 300ms ${theme.transitions.easing.easeInOut}`,
+      },
+    },
+    normalButton: {
+      height: 65,
+      textTransform: "none",
+    },
+    signUpLink: {
+      fontWeight: 700,
+      cursor: "pointer",
+      marginLeft: "10px",
+      textDecoration: "underline",
+      "&:hover": {
+        color: blue[700],
+      },
+    },
+    "@keyframes fadeIn": {
+      "0%": {
+        opacity: 1,
+      },
+      "30%": {
+        opacity: 0.2,
+      },
+      "100%": {
+        opacity: 0,
+      },
+    },
+    "@keyframes rotatingStart": {
+      "0%": {
+        width: "100%",
+        borderRadius: 0,
+        border: "none",
+      },
+      "50%": {
+        borderRadius: "60px",
+        border: "none",
+      },
+      "100%": {
+        width: "65px",
+        borderRadius: "50%",
+        margin: "18px auto",
+        borderColor: `${green[400]} transparent transparent`,
+        border: "5px solid",
+      },
+    },
+    "@keyframes rotating": {
+      from: {
+        transform: "rotate(0deg)",
+      },
+      to: {
+        transform: "rotate(360deg)",
+      },
+    },
   });
 
 class SignInPage extends React.Component<
-  Props & WithStyles<typeof styles>,
+  Props & WithStyles<typeof styles> & RouteComponentProps,
   State
 > {
   readonly state: State = {
@@ -124,7 +192,7 @@ class SignInPage extends React.Component<
       },
     },
     formState: {
-      type: FormStateType.DEFAULT,
+      type: FormStateType.SUCCESS,
       info: "",
       passwordVisible: false,
     },
@@ -192,10 +260,26 @@ class SignInPage extends React.Component<
     return isValid;
   };
 
-  handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  handleSignUpPageLink = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    this.props.history.replace(SIGN_UP);
+  };
+
+  handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (this.isFormValid()) {
-      console.log("Email & Password is valid");
+      /* https://reactjs.org/docs/faq-state.html#when-is-setstate-asynchronous
+        Please read to use setState here.
+      */
+      this.setState((prevState: State) => {
+        return {
+          formState: {
+            ...prevState.formState,
+            type: FormStateType.LOADING,
+            info: "",
+          },
+        };
+      });
     }
   };
 
@@ -262,16 +346,43 @@ class SignInPage extends React.Component<
                 variant="outlined"
               />
               <Button
+                className={
+                  formState.type === FormStateType.LOADING
+                    ? classes.buttonAnimation
+                    : classes.normalButton
+                }
                 variant="contained"
                 color="primary"
                 type="submit"
                 disabled={formState.type === FormStateType.LOADING}
               >
-                <Typography variant="subtitle1" align="center" component="span">
+                <Typography
+                  variant="body1"
+                  style={{ fontSize: "1.2rem", fontWeight: 700 }}
+                  align="center"
+                  component="span"
+                >
                   <Trans id="SignIn" />
                 </Typography>
               </Button>
             </form>
+            <Typography
+              variant="subtitle1"
+              align="center"
+              style={{ margin: "0px 20px" }}
+              component="p"
+            >
+              <Trans id="CreateAnAccountHere" />
+              {"."}
+              <Typography
+                variant="subtitle1"
+                className={classes.signUpLink}
+                component="a"
+                onClick={this.handleSignUpPageLink}
+              >
+                <Trans id="SignUp" />
+              </Typography>
+            </Typography>
           </Paper>
         </Container>
       </React.Fragment>
@@ -279,4 +390,4 @@ class SignInPage extends React.Component<
   }
 }
 
-export default withStyles(styles)(SignInPage);
+export default withRouter(withStyles(styles)(SignInPage));
