@@ -1,4 +1,12 @@
 {
+  "EnterYourEmailAddress": "તમારુ ઇમેઇલ એડ્રેસ દાખલ કરો",
+  "EnterYourPassword": "તમારો પાસવર્ડ નાખો",
   "Hi": "હાય",
+  "Message": "સંદેશ",
+  "PleaseEnterCorrectPassword": "કૃપા કરી સાચો પાસવર્ડ દાખલ કરો",
+  "PleaseEnterValidEmailAddress": "કૃપા કરીને માન્ય ઇમેઇલ સરનામું દાખલ કરો",
+  "SignIn": "સાઇન ઇન",
+  "SignUp": "સાઇન અપ",
+  "UserIsNotExistByThisEmailAddress": "આ ઇમેઇલ સરનામાં દ્વારા વપરાશકર્તા અસ્તિત્વમાં નથી",
   "WelcomeToMessageApp": "સંદેશ એપ્લિકેશનમાં આપનું સ્વાગત છે"
 }

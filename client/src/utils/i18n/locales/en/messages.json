@@ -1,4 +1,12 @@
 {
+  "EnterYourEmailAddress": "Enter your email address",
+  "EnterYourPassword": "Enter your password",
   "Hi": "Hi",
+  "Message": "Message",
+  "PleaseEnterCorrectPassword": "Please enter correct password",
+  "PleaseEnterValidEmailAddress": "Please enter valid email address",
+  "SignIn": "Sign In",
+  "SignUp": "Sign Up",
+  "UserIsNotExistByThisEmailAddress": "User is not exist by this email address",
   "WelcomeToMessageApp": "Welcome to Message App"
 }

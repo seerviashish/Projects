@@ -8,16 +8,54 @@ import {
   CssBaseline,
   Container,
   Typography,
-  Button,
   Paper,
-  Avatar,
-  SvgIcon,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Button,
 } from "@material-ui/core";
 import AppLogo from "src/components/AppLogo";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { Trans } from "@lingui/react";
 
 type Props = {};
-type State = {};
+
+export type FormValue = {
+  error: boolean;
+  helperText: string;
+  value: string;
+};
+
+export enum FormStateType {
+  DEFAULT,
+  LOADING,
+  SUCCESS,
+  ERROR,
+}
+
+export type FormState = {
+  type: FormStateType;
+  info: string;
+  passwordVisible: boolean;
+};
+
+type State = {
+  formData: { [key: string]: FormValue };
+  formState: FormState;
+};
+
+export type HelperTextMap = { [key: string]: { [id: string]: string } };
+
+const helperTextMap: HelperTextMap = {
+  email: {
+    NotValid: "PleaseEnterValidEmailAddress",
+    NotExist: "UserIsNotExistByThisEmailAddress",
+  },
+  password: {
+    NotCorrect: "PleaseEnterCorrectPassword",
+  },
+};
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -46,20 +84,124 @@ const styles = (theme: Theme) =>
         },
       },
     },
+    signInForm: {
+      display: "flex",
+      flexFlow: "column",
+      margin: "20px auto",
+      "& > * ": {
+        margin: "18px 0",
+      },
+      [theme.breakpoints.down("sm")]: {
+        width: "85%",
+      },
+      [theme.breakpoints.between("sm", "md")]: {
+        width: "80%",
+      },
+      [theme.breakpoints.between("md", "xl")]: {
+        width: "50%",
+      },
+      [theme.breakpoints.up("xl")]: {
+        width: "50%",
+      },
+    },
   });
 
 class SignInPage extends React.Component<
   Props & WithStyles<typeof styles>,
   State
 > {
-  readonly state: State = {};
+  readonly state: State = {
+    formData: {
+      email: {
+        error: false,
+        helperText: "",
+        value: "",
+      },
+      password: {
+        error: false,
+        helperText: "",
+        value: "",
+      },
+    },
+    formState: {
+      type: FormStateType.DEFAULT,
+      info: "",
+      passwordVisible: false,
+    },
+  };
 
   componentDidMount() {}
 
   componentWillUnmount() {}
 
+  handlePasswordVisibility = () => {
+    this.setState((prevState: State) => {
+      return {
+        formState: {
+          ...prevState.formState,
+          passwordVisible: !prevState.formState.passwordVisible,
+        },
+      };
+    });
+  };
+
+  handleOnMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
+  handleFormDataChange = (key: string) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    this.setState({
+      formData: {
+        ...this.state.formData,
+        [key]: {
+          error: false,
+          helperText: "",
+          value: event.target.value,
+        },
+      },
+      formState: {
+        ...this.state.formState,
+        type: FormStateType.DEFAULT,
+        info: "",
+      },
+    });
+  };
+
+  private isFormValid = (): boolean => {
+    const formData = { ...this.state.formData };
+    let isValid = true;
+    if (
+      formData.email.value.trim().length === 0 ||
+      (formData.email.value.trim().length > 0 &&
+        !formData.email.value.match(
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,4})+$/
+        ))
+    ) {
+      isValid = false;
+      formData.email.error = true;
+      formData.email.helperText = helperTextMap.email.NotValid;
+    }
+    if (formData.password.value.trim().length === 0) {
+      isValid = false;
+      formData.password.error = true;
+      formData.password.helperText = helperTextMap.password.NotCorrect;
+    }
+    this.setState({ formData });
+    return isValid;
+  };
+
+  handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (this.isFormValid()) {
+      console.log("Email & Password is valid");
+    }
+  };
+
   render() {
     const { classes } = this.props;
+    const { formData, formState } = this.state;
     return (
       <React.Fragment>
         <CssBaseline />
@@ -68,11 +210,68 @@ class SignInPage extends React.Component<
             <AppLogo
               height="100px"
               width="100px"
-              style={{ display: "block", margin: "10px auto" }}
+              style={{ display: "block", margin: "20px auto 0px" }}
             />
             <Typography variant="h4" gutterBottom align="center">
+              <Trans id="Message" />
+            </Typography>
+            <Typography variant="subtitle2" gutterBottom align="center">
               <Trans id="WelcomeToMessageApp" />
             </Typography>
+            <form
+              className={classes.signInForm}
+              onSubmit={this.handleFormSubmit}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                error={formData.email.error}
+                id="signin-email-form"
+                type="email"
+                label={<Trans id="EnterYourEmailAddress" />}
+                value={formData.email.value}
+                helperText={<Trans id={formData.email.helperText} />}
+                onChange={this.handleFormDataChange("email")}
+                variant="outlined"
+              />
+              <TextField
+                error={formData.password.error}
+                id="signin-password-form"
+                type={formState.passwordVisible ? "text" : "password"}
+                label={<Trans id="EnterYourPassword" />}
+                onChange={this.handleFormDataChange("password")}
+                value={formData.password.value}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={this.handlePasswordVisibility}
+                        onMouseDown={this.handleOnMouseDown}
+                      >
+                        {formState.passwordVisible ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                helperText={<Trans id={formData.password.helperText} />}
+                variant="outlined"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={formState.type === FormStateType.LOADING}
+              >
+                <Typography variant="subtitle1" align="center" component="span">
+                  <Trans id="SignIn" />
+                </Typography>
+              </Button>
+            </form>
           </Paper>
         </Container>
       </React.Fragment>
