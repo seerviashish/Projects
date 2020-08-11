@@ -9,9 +9,6 @@ export class ClientDB extends Dexie {
     cdb.version(1).stores({
       client: "&key",
     });
-    cdb.open().catch((err) => {
-      throw new Error("Client database not able to open.");
-    });
     this.client = this.table("client");
     cdb.client.mapToClass(Client);
   }

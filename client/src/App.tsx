@@ -7,6 +7,7 @@ import { HOME, SIGN_IN, SIGN_UP, ERROR } from "./constants/routes";
 import WaitingComponent from "./components/WaitingComponent";
 import AuthenticatedRoutes from "./utils/route/AuthenticatedRoutes";
 import UnauthenticatedRoutes from "./utils/route/UnauthenticatedRoutes";
+import PermissionProvider from "./utils/provider/PermissionProvider";
 
 const HomePage = lazy(() =>
   import(/* webpackChunkName: 'HomePage' */ "./pages/HomePage")
@@ -26,36 +27,38 @@ const ErrorPage = lazy(() =>
 
 const App: React.FC = () => {
   return (
-    <AppThemeProvider>
-      <LocaleProvider>
-        <SessionProvider>
-          <Router>
-            <Switch>
-              <Route
-                exact
-                path={ERROR}
-                component={WaitingComponent(ErrorPage)}
-              />
-              <UnauthenticatedRoutes
-                exact
-                path={SIGN_IN}
-                component={WaitingComponent(SignInPage)}
-              />
-              <UnauthenticatedRoutes
-                exact
-                path={SIGN_UP}
-                component={WaitingComponent(SignUpPage)}
-              />
-              <AuthenticatedRoutes
-                exact
-                path={HOME}
-                component={WaitingComponent(HomePage)}
-              />
-            </Switch>
-          </Router>
-        </SessionProvider>
-      </LocaleProvider>
-    </AppThemeProvider>
+    <PermissionProvider>
+      <AppThemeProvider>
+        <LocaleProvider>
+          <SessionProvider>
+            <Router>
+              <Switch>
+                <Route
+                  exact
+                  path={ERROR}
+                  component={WaitingComponent(ErrorPage)}
+                />
+                <UnauthenticatedRoutes
+                  exact
+                  path={SIGN_IN}
+                  component={WaitingComponent(SignInPage)}
+                />
+                <UnauthenticatedRoutes
+                  exact
+                  path={SIGN_UP}
+                  component={WaitingComponent(SignUpPage)}
+                />
+                <AuthenticatedRoutes
+                  exact
+                  path={HOME}
+                  component={WaitingComponent(HomePage)}
+                />
+              </Switch>
+            </Router>
+          </SessionProvider>
+        </LocaleProvider>
+      </AppThemeProvider>
+    </PermissionProvider>
   );
 };
 
