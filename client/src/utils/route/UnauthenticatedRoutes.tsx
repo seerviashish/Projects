@@ -19,14 +19,15 @@ const UnauthenticatedRoutes: React.FC<Props> = ({
   const ChildComponent = children || component;
   return (
     <SessionConsumer>
-      {({ session, loading }) => {
+      {({ user, loading, isAuthenticated }) => {
         return (
           !loading && (
             <Route
               path={path}
               exact={exact}
               render={(props: any) => {
-                return session ? (
+                const { access, refresh } = isAuthenticated(user);
+                return access && refresh ? (
                   <Redirect
                     to={{
                       pathname: HOME,

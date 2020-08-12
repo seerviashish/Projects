@@ -19,7 +19,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Trans } from "@lingui/react";
-import { green, blue } from "@material-ui/core/colors";
+import { green, blue, red } from "@material-ui/core/colors";
 import { SIGN_IN } from "src/constants/routes";
 import {
   FormValue,
@@ -27,6 +27,8 @@ import {
   HelperTextMap,
   FormStateType,
 } from "../SignInPage";
+import appNetwork from "src/utils/network";
+import apis from "src/constants/api";
 
 type Props = {};
 type State = {
@@ -40,10 +42,13 @@ const helperTextMap: HelperTextMap = {
   },
   email: {
     NotValid: "PleaseEnterValidEmailAddress",
-    NotExist: "UserIsNotExistByThisEmailAddress",
+    IsExist: "UserIsExistByThisEmailAddress",
   },
   password: {
     NotCorrect: "PleaseEnterCorrectPassword",
+  },
+  error: {
+    signUp: "UserSignUpFailed",
   },
 };
 
@@ -190,10 +195,6 @@ class SignUpPage extends React.Component<
     },
   };
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
   handlePasswordVisibility = () => {
     this.setState((prevState: State) => {
       return {
@@ -264,13 +265,55 @@ class SignUpPage extends React.Component<
 
   handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (this.isFormValid()) {
+    try {
+      if (this.isFormValid()) {
+        this.setState((prevState: State) => {
+          return {
+            formState: {
+              ...prevState.formState,
+              type: FormStateType.LOADING,
+              info: "",
+            },
+          };
+        });
+        const { formData } = this.state;
+        const data = {
+          name: formData.name.value,
+          email: formData.email.value,
+          password: formData.password.value,
+        };
+        const signUpResponse = await appNetwork.post(apis.SIGN_UP, data);
+        if (signUpResponse.data) {
+          // await saveClientDB(new Client(USER_KEY, signUpResponse.data), cdb);
+          this.setState((prevState: State) => {
+            const formDataReset = { ...prevState.formData };
+            formDataReset.name.value = "";
+            formDataReset.email.value = "";
+            formDataReset.password.value = "";
+            return {
+              ...prevState,
+              formData: {
+                ...formDataReset,
+              },
+              formState: {
+                ...prevState.formState,
+                type: FormStateType.SUCCESS,
+                info: "",
+              },
+            };
+          });
+        } else {
+          throw new Error("Sign up failed");
+        }
+      }
+    } catch (error) {
       this.setState((prevState: State) => {
         return {
+          ...prevState,
           formState: {
             ...prevState.formState,
-            type: FormStateType.LOADING,
-            info: "",
+            type: FormStateType.ERROR,
+            info: helperTextMap.error.signUp,
           },
         };
       });
@@ -370,6 +413,21 @@ class SignUpPage extends React.Component<
                   <Trans id="SignUp" />
                 </Typography>
               </Button>
+              <Typography
+                variant="subtitle2"
+                style={{
+                  fontSize: "1.0rem",
+                  fontWeight: 400,
+                  color: red[700],
+                  display: "block",
+                }}
+                align="center"
+                component="span"
+              >
+                {formState.type === FormStateType.ERROR && (
+                  <Trans id={formState.info} />
+                )}
+              </Typography>
             </form>
             <Typography
               variant="subtitle1"

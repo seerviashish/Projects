@@ -13,6 +13,12 @@ export const getByKey = async (key: string, db: ClientDB): Promise<any> => {
   });
 };
 
+export const deleteByKey = async (key: string, db: ClientDB): Promise<any> => {
+  return db.transaction("rw", db.client, () => {
+    return db.client.where({ key }).delete();
+  });
+};
+
 export const isKeyExist = async (
   key: string,
   db: ClientDB

@@ -17,8 +17,13 @@ const getCurrentDateTimeUtcTZ = (): string => {
   return moment.utc().format();
 };
 
+const getTimeDifferenceWithCurrent = (endTime: string): number => {
+  return moment(endTime).valueOf() - moment().valueOf();
+};
+
 export {
   convertUtcToLocalDateString,
   convertUtcToLocalDate,
   getCurrentDateTimeUtcTZ,
+  getTimeDifferenceWithCurrent,
 };

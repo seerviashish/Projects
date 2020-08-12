@@ -11,6 +11,9 @@
   "PleaseEnterValidName": "Please enter valid name",
   "SignIn": "Sign In",
   "SignUp": "Sign Up",
+  "UserIsExistByThisEmailAddress": "User is already exist by this email address",
   "UserIsNotExistByThisEmailAddress": "User is not exist by this email address",
+  "UserSignInFailed": "User sign in failed",
+  "UserSignUpFailed": "User sign up failed",
   "WelcomeToMessageApp": "Welcome to Message App"
 }

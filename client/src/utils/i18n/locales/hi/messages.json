@@ -11,6 +11,9 @@
   "PleaseEnterValidName": "कृपया मान्य नाम दर्ज करें",
   "SignIn": "साइन इन",
   "SignUp": "साइन अप",
+  "UserIsExistByThisEmailAddress": "उपयोगकर्ता इस ईमेल पते पर पहले से मौजूद है",
   "UserIsNotExistByThisEmailAddress": "उपयोगकर्ता इस ईमेल पते से मौजूद नहीं है",
+  "UserSignInFailed": "उपयोगकर्ता साइन इन विफल रहा",
+  "UserSignUpFailed": "उपयोगकर्ता साइन अप विफल रहा",
   "WelcomeToMessageApp": "संदेश ऐप में आपका स्वागत है"
 }

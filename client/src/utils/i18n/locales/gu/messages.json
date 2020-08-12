@@ -11,6 +11,9 @@
   "PleaseEnterValidName": "કૃપા કરી માન્ય નામ દાખલ કરો",
   "SignIn": "સાઇન ઇન",
   "SignUp": "સાઇન અપ",
+  "UserIsExistByThisEmailAddress": "આ ઇમેઇલ સરનામાં દ્વારા વપરાશકર્તા પહેલાથી અસ્તિત્વમાં છે",
   "UserIsNotExistByThisEmailAddress": "આ ઇમેઇલ સરનામાં દ્વારા વપરાશકર્તા અસ્તિત્વમાં નથી",
+  "UserSignInFailed": "વપરાશકર્તા સાઇન ઇન નિષ્ફળ થયું",
+  "UserSignUpFailed": "વપરાશકર્તા સાઇન અપ નિષ્ફળ થયું",
   "WelcomeToMessageApp": "સંદેશ એપ્લિકેશનમાં આપનું સ્વાગત છે"
 }
