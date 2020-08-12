@@ -9,9 +9,22 @@ import {
   LinearProgress,
   Paper,
   Typography,
+  CardContent,
+  Card,
+  CardActions,
+  Button,
+  CardHeader,
+  Snackbar,
 } from "@material-ui/core";
 import ErrorIcon from "@material-ui/icons/Error";
+import ErrorOutlineIcon from "@material-ui/icons/ErrorOutline";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { cdb } from "src/db/ClientDB";
+import { yellow } from "@material-ui/core/colors";
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export type AppPermission = {
   key: string;
@@ -27,12 +40,17 @@ export type PermissionContextType = {
   loading: boolean;
   error?: any;
   permissions: AppPermission[];
-  requestForPermission?: (key: string) => Promise<any>;
+  requestForPermission?: (key: string) => Promise<number>;
+  isLocationPermissionAllowed?: () => Promise<boolean>;
+  isCameraPermissionAllowed?: () => Promise<boolean>;
+  isMicrophonePermissionAllowed?: () => Promise<boolean>;
+  isNotificationsPermissionAllowed?: () => Promise<boolean>;
+  isOnline?: () => boolean;
 };
 
 const requiredPermissions: AppPermission[] = [
   {
-    key: "location",
+    key: "geolocation",
     name: "Location",
     required: false,
     runtime: true,
@@ -109,7 +127,8 @@ type State = {
   loading: boolean;
   error?: any;
   permissions: AppPermission[];
-  online: boolean;
+  warnMessage: string;
+  warnMessageOpen: boolean;
 };
 
 const styles = (theme: Theme) =>
@@ -139,6 +158,13 @@ const styles = (theme: Theme) =>
         width: "50%",
       },
     },
+    card: {
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
+    },
+    cardAction: {
+      justifyContent: "flex-end",
+    },
   });
 
 class PermissionProvider extends React.Component<
@@ -147,12 +173,46 @@ class PermissionProvider extends React.Component<
 > {
   readonly state: State = {
     resolved: false,
-    online: true,
     loading: true,
     error: null,
     permissions: [],
+    warnMessage: "",
+    warnMessageOpen: false,
   };
 
+  requestForPermission = async (key: string): Promise<number> => {
+    try {
+      const requestPermission = this.state.permissions.filter(
+        (data: AppPermission) =>
+          data.key === key &&
+          ["camera", "microphone", "notification", "geolocation"].includes(key)
+      );
+      if (requestPermission.length === 1) {
+        const permissionState = await navigator.permissions.query({
+          name: key as PermissionName,
+        });
+        if (permissionState.state === "granted") {
+          return 1;
+        } else if (permissionState.state === "prompt") {
+          return 2;
+        } else {
+          throw new Error(
+            `Permission of ${requestPermission[0].name} is required!`
+          );
+        }
+      } else {
+        throw new Error(`Permission function didn't configured for ${key}`);
+      }
+    } catch (error) {
+      this.setState({
+        warnMessageOpen: true,
+        warnMessage: error.message ?? "Permission error!",
+      });
+      return 0;
+    }
+  };
+
+  // In future need to implement by using event driven function to listen network status.
   isOnline = (): boolean => {
     try {
       return navigator && navigator.onLine;
@@ -291,10 +351,11 @@ class PermissionProvider extends React.Component<
           ).length === 0;
         this.setState((prevState: State, props: Props) => {
           return {
-            online: isOnline,
             permissions,
             resolved: isResolved,
             loading: false,
+            warnMessageOpen: !isOnline,
+            warnMessage: "You are not connected to internet!",
           };
         });
       })
@@ -309,8 +370,22 @@ class PermissionProvider extends React.Component<
       });
   }
 
+  handleMessageClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    this.setState({ warnMessageOpen: false });
+  };
+
   render() {
-    const { resolved, loading, error, permissions } = this.state;
+    const {
+      resolved,
+      loading,
+      error,
+      permissions,
+      warnMessageOpen,
+      warnMessage,
+    } = this.state;
     const { classes } = this.props;
     if (!resolved) {
       let child: ReactNode = null;
@@ -320,7 +395,11 @@ class PermissionProvider extends React.Component<
         child = (
           <Paper elevation={3} className={classes.paperSection} component="div">
             <ErrorIcon color="error" />
-            <Typography component="h5" variant="h5" style={{ color: "red" }}>
+            <Typography
+              component="h5"
+              variant="h5"
+              style={{ color: yellow[700] }}
+            >
               {"Error"}
             </Typography>
             <Typography
@@ -339,9 +418,81 @@ class PermissionProvider extends React.Component<
           (data: AppPermission) => data.required && !data.isAllowed
         ).length > 0
       ) {
-        child = <p>Permission Required</p>;
+        child = (
+          <Paper elevation={3} className={classes.paperSection} component="div">
+            {permissions
+              .filter((data: AppPermission) => data.required && !data.isAllowed)
+              .map((data: AppPermission, index: number) => {
+                return (
+                  <Card
+                    key={`permission-card-${index}`}
+                    className={classes.card}
+                    variant="outlined"
+                  >
+                    <CardHeader
+                      avatar={
+                        <ErrorOutlineIcon
+                          style={{ color: yellow[700], margin: 4 }}
+                        />
+                      }
+                      title={
+                        <Typography component="h5" variant="h5" gutterBottom>
+                          {data.name}
+                        </Typography>
+                      }
+                    />
+                    <CardContent>
+                      <Typography
+                        component="p"
+                        variant="body2"
+                        style={{ overflowX: "auto", whiteSpace: "pre-wrap" }}
+                      >
+                        {data.info}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+          </Paper>
+        );
       } else {
-        child = <p>Contact here</p>;
+        child = (
+          <Paper elevation={3} className={classes.paperSection} component="div">
+            <Card className={classes.card} variant="outlined">
+              <CardHeader
+                avatar={
+                  <ErrorOutlineIcon style={{ color: yellow[700], margin: 4 }} />
+                }
+                title={
+                  <Typography component="h5" variant="h5" gutterBottom>
+                    {"Help - Unknown Error"}
+                  </Typography>
+                }
+              />
+              <CardContent>
+                <Typography
+                  component="p"
+                  variant="body2"
+                  style={{ overflowX: "auto", whiteSpace: "pre-wrap" }}
+                >
+                  {
+                    "Something went wrong! Please try to contact developer to resolve issue with client application."
+                  }
+                </Typography>
+              </CardContent>
+              <CardActions className={classes.cardAction}>
+                <Button
+                  href="mailto:help@messageapp.com"
+                  size="small"
+                  variant="outlined"
+                  aria-label="Contact developer button"
+                >
+                  Contact Us
+                </Button>
+              </CardActions>
+            </Card>
+          </Paper>
+        );
       }
       return (
         <React.Fragment>
@@ -356,9 +507,25 @@ class PermissionProvider extends React.Component<
       <Provider
         value={{
           ...this.state,
+          isOnline: this.isOnline,
+          requestForPermission: this.requestForPermission,
+          isCameraPermissionAllowed: this.isCameraPermissionAllowed,
+          isLocationPermissionAllowed: this.isLocationPermissionAllowed,
+          isMicrophonePermissionAllowed: this.isMicrophonePermissionAllowed,
+          isNotificationsPermissionAllowed: this
+            .isNotificationsPermissionAllowed,
         }}
       >
         {this.props.children}
+        <Snackbar
+          open={warnMessageOpen}
+          autoHideDuration={5000}
+          onClose={this.handleMessageClose}
+        >
+          <Alert onClose={this.handleMessageClose} severity="warning">
+            {warnMessage}
+          </Alert>
+        </Snackbar>
       </Provider>
     );
   }

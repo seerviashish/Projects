@@ -13,6 +13,7 @@
   "eslint.enable": true,
   "eslint.packageManager": "yarn",
   "cSpell.words": [
+    "clickaway",
     "dexie"
   ]
 }
