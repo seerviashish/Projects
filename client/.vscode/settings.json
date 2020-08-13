@@ -12,8 +12,7 @@
   "jest.showCoverageOnLoad": true,
   "eslint.enable": true,
   "eslint.packageManager": "yarn",
-  "cSpell.words": [
-    "clickaway",
-    "dexie"
-  ]
+  "javascript.suggest.completeJSDocs": true,
+  "editor.snippetSuggestions": "top",
+  "cSpell.words": ["clickaway", "dexie"]
 }

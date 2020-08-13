@@ -18,7 +18,7 @@ const getCurrentDateTimeUtcTZ = (): string => {
 };
 
 const getTimeDifferenceWithCurrent = (endTime: string): number => {
-  return moment(endTime).valueOf() - moment().valueOf();
+  return moment(endTime).diff(moment(), "minutes");
 };
 
 export {

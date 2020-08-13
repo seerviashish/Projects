@@ -17,6 +17,7 @@ import {
   LinearProgress,
 } from "@material-ui/core";
 import { getTimeDifferenceWithCurrent } from "../time-utils";
+import { Response, ResponseStatus, ResponseError } from "../TypeDefinition";
 
 export type Token = {
   expires: string;
@@ -79,10 +80,11 @@ export type SessionContextType = {
   canVideoCall?: () => boolean;
   canCall?: () => boolean;
   isAuthenticated: (user: User | undefined) => TokenValidStatus;
-  signIn?: (signInDetail: SignInDetail) => Promise<any>;
+  signIn?: (signInDetail: SignInDetail) => Promise<Response>;
   signUp?: (signUpDetail: SignUpDetail) => Promise<any>;
   refreshToken?: () => Promise<any>;
   signOut?: () => Promise<void>;
+  updateUserState?: () => Promise<void>;
 };
 
 const defaultContext: SessionContextType = {
@@ -141,17 +143,27 @@ class SessionProvider extends React.Component<
       return undefined;
     }
   };
-
+  /**
+   * @param {Token} token
+   * @returns {boolean} true if token is expired
+   */
   private isTokenExpired = (token: Token): boolean => {
     return getTimeDifferenceWithCurrent(token.expires) <= 0;
   };
 
+  /**
+   *
+   * @param {User | undefined} user
+   * @returns {TokenValidStatus}
+   * if access: true if access token is valid and
+   * refresh: true if refresh token is valid
+   */
   isUserTokenValid = (user: User | undefined): TokenValidStatus => {
     if (!user) {
       return { access: false, refresh: false };
     }
-    const access: boolean = this.isTokenExpired(user.tokens.access);
-    const refresh: boolean = this.isTokenExpired(user.tokens.refresh);
+    const access: boolean = !this.isTokenExpired(user.tokens.access);
+    const refresh: boolean = !this.isTokenExpired(user.tokens.refresh);
     return { access, refresh } as TokenValidStatus;
   };
 
@@ -174,6 +186,101 @@ class SessionProvider extends React.Component<
       this.setState({
         user: undefined,
       });
+    }
+  };
+
+  private getStateDetailBySession = (
+    sessionStateDetail: SessionStateDetail
+  ): State => {
+    const state: State = { ...this.state };
+    if (sessionStateDetail.type === SessionState.AUTHENTICATED) {
+      return {
+        ...state,
+        user: sessionStateDetail.data,
+        resolved: true,
+        loading: false,
+      };
+    } else if (sessionStateDetail.type === SessionState.REFRESHED_AUTH) {
+      return {
+        ...state,
+        user: sessionStateDetail.data,
+        resolved: true,
+        loading: false,
+      };
+    } else if (sessionStateDetail.type === SessionState.UNAUTHENTICATED) {
+      return {
+        ...state,
+        user: undefined,
+        autoLogin: true,
+        resolved: true,
+        loading: false,
+      };
+    } else {
+      return {
+        ...state,
+        user: undefined,
+        autoLogin: true,
+        resolved: true,
+        loading: false,
+      };
+    }
+  };
+
+  updateUserState = async (): Promise<void> => {
+    const sessionStateDetail: SessionStateDetail = await this.sessionStateData();
+    const state: State = this.getStateDetailBySession(sessionStateDetail);
+    this.setState({ ...state });
+  };
+
+  signIn = async (signInDetail: SignInDetail): Promise<Response> => {
+    try {
+      const response: any = await appNetwork.post(apis.SIGN_IN, signInDetail);
+      const user: User = response && response.data ? response.data : undefined;
+      const { access, refresh } = this.isUserTokenValid(user);
+      if (access && refresh) {
+        const dbResponse = await saveClientDB(new Client(USER_KEY, user), cdb);
+        if (!dbResponse) {
+          throw new Error("User detail is not saved in database");
+        }
+        return { status: ResponseStatus.SUCCESS, data: user };
+      } else {
+        throw new Error("User token detail is not valid");
+      }
+    } catch (err) {
+      const error: ResponseError = {
+        trace: err,
+        message:
+          err && err.message
+            ? err.message
+            : "Unknown error ocurred during sign in",
+      };
+      return { status: ResponseStatus.FAILED, error };
+    }
+  };
+
+  signUp = async (signUpDetail: SignUpDetail): Promise<Response> => {
+    try {
+      const response: any = await appNetwork.post(apis.SIGN_UP, signUpDetail);
+      const user: User = response && response.data ? response.data : undefined;
+      const { access, refresh } = this.isUserTokenValid(user);
+      if (access && refresh) {
+        const dbResponse = await saveClientDB(new Client(USER_KEY, user), cdb);
+        if (!dbResponse) {
+          throw new Error("User detail is not saved in database");
+        }
+        return { status: ResponseStatus.SUCCESS, data: user };
+      } else {
+        throw new Error("User token detail is not valid");
+      }
+    } catch (err) {
+      const error: ResponseError = {
+        trace: err,
+        message:
+          err && err.message
+            ? err.message
+            : "Unknown error ocurred during sign up",
+      };
+      return { status: ResponseStatus.FAILED, error };
     }
   };
 
@@ -209,33 +316,8 @@ class SessionProvider extends React.Component<
 
   componentDidMount() {
     this.sessionStateData().then((sessionStateDetail: SessionStateDetail) => {
-      if (sessionStateDetail.type === SessionState.AUTHENTICATED) {
-        this.setState({
-          user: sessionStateDetail.data,
-          resolved: true,
-          loading: false,
-        });
-      } else if (sessionStateDetail.type === SessionState.REFRESHED_AUTH) {
-        this.setState({
-          user: sessionStateDetail.data,
-          resolved: true,
-          loading: false,
-        });
-      } else if (sessionStateDetail.type === SessionState.UNAUTHENTICATED) {
-        this.setState({
-          user: undefined,
-          autoLogin: true,
-          resolved: true,
-          loading: false,
-        });
-      } else {
-        this.setState({
-          user: undefined,
-          autoLogin: true,
-          resolved: true,
-          loading: false,
-        });
-      }
+      const state: State = this.getStateDetailBySession(sessionStateDetail);
+      this.setState({ ...state });
     });
   }
   render() {
@@ -261,6 +343,9 @@ class SessionProvider extends React.Component<
           ...this.state,
           isAuthenticated: this.isUserTokenValid,
           signOut: this.signOut,
+          signIn: this.signIn,
+          signUp: this.signUp,
+          updateUserState: this.updateUserState,
         }}
       >
         {this.props.children}

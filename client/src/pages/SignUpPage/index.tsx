@@ -13,6 +13,7 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  LinearProgress,
 } from "@material-ui/core";
 import AppLogo from "src/components/AppLogo";
 import Visibility from "@material-ui/icons/Visibility";
@@ -27,10 +28,17 @@ import {
   HelperTextMap,
   FormStateType,
 } from "../SignInPage";
-import appNetwork from "src/utils/network";
-import apis from "src/constants/api";
+import {
+  Consumer as SessionConsumer,
+  SignUpDetail,
+} from "src/utils/session/SessionProvider";
+import { Response, ResponseStatus } from "src/utils/TypeDefinition";
 
-type Props = {};
+type Props = {
+  signUp?: (signInDetail: SignUpDetail) => Promise<Response>;
+  updateUserState?: () => Promise<void>;
+};
+
 type State = {
   formData: { [key: string]: FormValue };
   formState: FormState;
@@ -54,6 +62,10 @@ const helperTextMap: HelperTextMap = {
 
 const styles = (theme: Theme) =>
   createStyles({
+    loading: {
+      height: "0.5rem",
+      width: "100%",
+    },
     formSection: {
       display: "flex",
       justifyContent: "center",
@@ -166,7 +178,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-class SignUpPage extends React.Component<
+class SignUp extends React.Component<
   Props & WithStyles<typeof styles> & RouteComponentProps,
   State
 > {
@@ -189,7 +201,7 @@ class SignUpPage extends React.Component<
       },
     },
     formState: {
-      type: FormStateType.SUCCESS,
+      type: FormStateType.DEFAULT,
       info: "",
       passwordVisible: false,
     },
@@ -276,34 +288,43 @@ class SignUpPage extends React.Component<
             },
           };
         });
-        const { formData } = this.state;
-        const data = {
-          name: formData.name.value,
-          email: formData.email.value,
-          password: formData.password.value,
+        const { signUp, updateUserState } = this.props;
+        if (!signUp || !updateUserState) {
+          throw new Error("Not found function for sign up");
+        }
+        const { email, password, name } = this.state.formData;
+        const signUpDetail: SignUpDetail = {
+          email: email.value,
+          password: password.value,
+          name: name.value,
         };
-        const signUpResponse = await appNetwork.post(apis.SIGN_UP, data);
-        if (signUpResponse.data) {
-          // await saveClientDB(new Client(USER_KEY, signUpResponse.data), cdb);
+        const response: Response = await signUp(signUpDetail);
+        if (response.status === ResponseStatus.SUCCESS) {
+          const formDefault = { value: "", error: false, helperText: "" };
           this.setState((prevState: State) => {
-            const formDataReset = { ...prevState.formData };
-            formDataReset.name.value = "";
-            formDataReset.email.value = "";
-            formDataReset.password.value = "";
             return {
               ...prevState,
               formData: {
-                ...formDataReset,
+                email: {
+                  ...formDefault,
+                },
+                password: {
+                  ...formDefault,
+                },
+                name: {
+                  ...formDefault,
+                },
               },
               formState: {
                 ...prevState.formState,
-                type: FormStateType.SUCCESS,
+                type: FormStateType.DEFAULT,
                 info: "",
               },
             };
           });
+          await updateUserState();
         } else {
-          throw new Error("Sign up failed");
+          throw new Error(response.error?.message);
         }
       }
     } catch (error) {
@@ -453,4 +474,28 @@ class SignUpPage extends React.Component<
   }
 }
 
-export default withRouter(withStyles(styles)(SignUpPage));
+class SignUpPageWrapper extends React.Component<
+  WithStyles<typeof styles> & RouteComponentProps
+> {
+  render() {
+    const { classes } = this.props;
+    return (
+      <SessionConsumer>
+        {({ loading, signUp, updateUserState }) => {
+          if (loading) {
+            return <LinearProgress className={classes.loading} />;
+          }
+          return (
+            <SignUp
+              {...this.props}
+              signUp={signUp}
+              updateUserState={updateUserState}
+            />
+          );
+        }}
+      </SessionConsumer>
+    );
+  }
+}
+
+export default withRouter(withStyles(styles)(SignUpPageWrapper));

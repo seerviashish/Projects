@@ -13,16 +13,25 @@ import {
   InputAdornment,
   IconButton,
   Button,
+  LinearProgress,
 } from "@material-ui/core";
 import AppLogo from "src/components/AppLogo";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Trans } from "@lingui/react";
-import { green, blue } from "@material-ui/core/colors";
+import { green, blue, red } from "@material-ui/core/colors";
 import { SIGN_UP } from "src/constants/routes";
+import {
+  Consumer as SessionConsumer,
+  SignInDetail,
+} from "src/utils/session/SessionProvider";
+import { Response, ResponseStatus } from "src/utils/TypeDefinition";
 
-type Props = {};
+type Props = {
+  signIn?: (signInDetail: SignInDetail) => Promise<Response>;
+  updateUserState?: () => Promise<void>;
+};
 
 export type FormValue = {
   error: boolean;
@@ -33,7 +42,6 @@ export type FormValue = {
 export enum FormStateType {
   DEFAULT,
   LOADING,
-  SUCCESS,
   ERROR,
 }
 
@@ -58,10 +66,17 @@ const helperTextMap: HelperTextMap = {
   password: {
     NotCorrect: "PleaseEnterCorrectPassword",
   },
+  error: {
+    signIn: "UserSignInFailed",
+  },
 };
 
 const styles = (theme: Theme) =>
   createStyles({
+    loading: {
+      height: "0.5rem",
+      width: "100%",
+    },
     formSection: {
       display: "flex",
       justifyContent: "center",
@@ -174,7 +189,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-class SignInPage extends React.Component<
+class SignIn extends React.Component<
   Props & WithStyles<typeof styles> & RouteComponentProps,
   State
 > {
@@ -192,7 +207,7 @@ class SignInPage extends React.Component<
       },
     },
     formState: {
-      type: FormStateType.SUCCESS,
+      type: FormStateType.DEFAULT,
       info: "",
       passwordVisible: false,
     },
@@ -267,16 +282,63 @@ class SignInPage extends React.Component<
 
   handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (this.isFormValid()) {
-      /* https://reactjs.org/docs/faq-state.html#when-is-setstate-asynchronous
+    try {
+      if (this.isFormValid()) {
+        /* https://reactjs.org/docs/faq-state.html#when-is-setstate-asynchronous
         Please read to use setState here.
       */
+        this.setState((prevState: State) => {
+          return {
+            formState: {
+              ...prevState.formState,
+              type: FormStateType.LOADING,
+              info: "",
+            },
+          };
+        });
+        const { signIn, updateUserState } = this.props;
+        if (!signIn || !updateUserState) {
+          throw new Error("Not found function for sign in");
+        }
+        const { email, password } = this.state.formData;
+        const signInDetail: SignInDetail = {
+          email: email.value,
+          password: password.value,
+        };
+        const response: Response = await signIn(signInDetail);
+        if (response.status === ResponseStatus.SUCCESS) {
+          const formDefault = { value: "", error: false, helperText: "" };
+          this.setState((prevState: State) => {
+            return {
+              ...prevState,
+              formData: {
+                email: {
+                  ...formDefault,
+                },
+                password: {
+                  ...formDefault,
+                },
+              },
+              formState: {
+                ...prevState.formState,
+                type: FormStateType.DEFAULT,
+                info: "",
+              },
+            };
+          });
+          await updateUserState();
+        } else {
+          throw new Error(response.error?.message);
+        }
+      }
+    } catch (error) {
       this.setState((prevState: State) => {
         return {
+          ...prevState,
           formState: {
             ...prevState.formState,
-            type: FormStateType.LOADING,
-            info: "",
+            type: FormStateType.ERROR,
+            info: helperTextMap.error.signIn,
           },
         };
       });
@@ -365,6 +427,21 @@ class SignInPage extends React.Component<
                   <Trans id="SignIn" />
                 </Typography>
               </Button>
+              <Typography
+                variant="subtitle2"
+                style={{
+                  fontSize: "1.0rem",
+                  fontWeight: 400,
+                  color: red[700],
+                  display: "block",
+                }}
+                align="center"
+                component="span"
+              >
+                {formState.type === FormStateType.ERROR && (
+                  <Trans id={formState.info} />
+                )}
+              </Typography>
             </form>
             <Typography
               variant="subtitle1"
@@ -390,4 +467,28 @@ class SignInPage extends React.Component<
   }
 }
 
-export default withRouter(withStyles(styles)(SignInPage));
+class SignInPageWrapper extends React.Component<
+  WithStyles<typeof styles> & RouteComponentProps
+> {
+  render() {
+    const { classes } = this.props;
+    return (
+      <SessionConsumer>
+        {({ loading, signIn, updateUserState }) => {
+          if (loading) {
+            return <LinearProgress className={classes.loading} />;
+          }
+          return (
+            <SignIn
+              {...this.props}
+              signIn={signIn}
+              updateUserState={updateUserState}
+            />
+          );
+        }}
+      </SessionConsumer>
+    );
+  }
+}
+
+export default withRouter(withStyles(styles)(SignInPageWrapper));
