@@ -14,5 +14,10 @@
   "eslint.packageManager": "yarn",
   "javascript.suggest.completeJSDocs": true,
   "editor.snippetSuggestions": "top",
-  "cSpell.words": ["clickaway", "dexie"]
+  "cSpell.words": [
+    "RECENTS",
+    "appbar",
+    "clickaway",
+    "dexie"
+  ]
 }

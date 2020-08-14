@@ -182,6 +182,8 @@ class SessionProvider extends React.Component<
   signOut = async (): Promise<void> => {
     try {
       await deleteClientByKey(USER_KEY, cdb);
+    } catch (error) {
+      // log error
     } finally {
       this.setState({
         user: undefined,
@@ -302,7 +304,7 @@ class SessionProvider extends React.Component<
         const newUser: User = { ...user, tokens: { ...newTokens } };
         await saveClientDB(new Client(USER_KEY, newUser), cdb);
         sessionStateDetail.type = SessionState.REFRESHED_AUTH;
-        sessionStateDetail.data = user;
+        sessionStateDetail.data = newUser;
       } else {
         await deleteClientByKey(USER_KEY, cdb);
         sessionStateDetail.type = SessionState.UNAUTHENTICATED;
