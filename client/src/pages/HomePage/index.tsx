@@ -19,15 +19,15 @@ import {
   Tab,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import ChatIcon from "@material-ui/icons/Chat";
-import DonutSmallIcon from "@material-ui/icons/DonutSmall";
-import CallIcon from "@material-ui/icons/Call";
 import { Trans } from "@lingui/react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Consumer as SessionConsumer,
   User,
 } from "src/utils/session/SessionProvider";
+import TabView from "src/components/TabView";
+import ChatView from "src/components/ChatView";
+import { ChatViewItemType, MessageType } from "src/utils/TypeDefinition";
 
 enum MenuItemType {
   Profile = "Profile",
@@ -43,6 +43,7 @@ type Props = {
 type State = {
   anchorEl?: HTMLElement;
   tabIndex: number;
+  chatViewList: ChatViewItemType[];
 };
 
 const styles = (theme: Theme) =>
@@ -52,31 +53,24 @@ const styles = (theme: Theme) =>
       margin: 0,
       padding: 0,
       maxWidth: "100%",
-      height: "100vh",
-      position: "relative",
-    },
-    appbar: {
-      position: "fixed",
-      top: 0,
-      height: 64,
     },
     tabContainer: {
       width: "100%",
-      position: "fixed",
-      height: 64,
-      bottom: 0,
       maxWidth: "100%",
-      backgroundColor: theme.palette.primary.light,
       "& *": {
         textTransform: "none",
       },
     },
     main: {
       borderRadius: 0,
-      height: "100vh",
-      backgroundColor: "grey",
-      overflowX: "scroll",
-      padding: "64px 0",
+      position: "absolute",
+      top: 100,
+      bottom: 60,
+      right: 0,
+      left: 0,
+      zIndex: -1,
+      overflowY: "scroll",
+      backgroundColor: "secondary",
     },
     title: {
       flexGrow: 1,
@@ -84,6 +78,15 @@ const styles = (theme: Theme) =>
     },
     menuItem: {
       marginRight: theme.spacing(5),
+    },
+    footer: {
+      position: "fixed",
+      bottom: 0,
+      height: 60,
+      width: "100%",
+    },
+    tabView: {
+      width: "100%",
     },
   });
 
@@ -93,6 +96,671 @@ class HomePage extends React.Component<
 > {
   readonly state: State = {
     tabIndex: 0,
+    chatViewList: [
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "daddasdlhajsd ajsdadajda",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "1",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "17",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "16",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "15",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "14",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "13",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "12",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "11",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "10",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "9",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "8",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "7",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "6",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "5",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "4",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "3",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+      {
+        lastMessage: {
+          sender: {
+            name: "Rohan Manga",
+            email: "rohan@gmail.com",
+          },
+          recipient: {
+            name: "Ashish Chaudhary",
+            email: "ashish@gmail.com",
+            isGroup: false,
+            groupId: "",
+          },
+          messageContent: [
+            {
+              id: "1",
+              message: [
+                {
+                  lineNum: 1,
+                  content: "Hi Hello! Whats Ap!",
+                  type: MessageType.TEXT,
+                },
+                {
+                  lineNum: 2,
+                  content: "dada",
+                  type: MessageType.TEXT,
+                },
+              ],
+            },
+          ],
+          sentTime: "",
+          receivedTime: "",
+          isRead: false,
+          isReceived: false,
+        },
+        userName: "Ashish Chaudhary",
+        userId: "2",
+        profileUrl: "profile.jpeg",
+        isRead: false,
+      },
+    ],
   };
 
   componentDidMount() {
@@ -133,12 +801,13 @@ class HomePage extends React.Component<
 
   render() {
     const { classes } = this.props;
-    const { anchorEl, tabIndex } = this.state;
+    const { anchorEl, tabIndex, chatViewList } = this.state;
+    console.log("==>tabIndex ==> ", tabIndex);
     return (
       <React.Fragment>
         <CssBaseline />
         <Container className={classes.container} component="div">
-          <AppBar position="fixed" className={classes.appbar}>
+          <AppBar position="static">
             <Toolbar>
               <Typography
                 variant="h6"
@@ -188,28 +857,37 @@ class HomePage extends React.Component<
               </Menu>
             </Toolbar>
           </AppBar>
+          <Paper square className={classes.tabContainer} component="nav">
+            <Tabs
+              value={tabIndex}
+              onChange={this.handleTabChange}
+              variant="fullWidth"
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="tab buttons"
+            >
+              <Tab label="Chat" />
+              <Tab label="Calls" />
+            </Tabs>
+          </Paper>
           <Paper
             className={classes.main}
             component="main"
             elevation={0}
             variant="outlined"
           >
-            <p>a</p>
+            <TabView active={tabIndex === 0}>
+              <ChatView chatViewList={chatViewList} />
+            </TabView>
+            <TabView active={tabIndex === 1}>
+              <p>test 2</p>
+            </TabView>
           </Paper>
-          <Paper square className={classes.tabContainer} component="footer">
-            <Tabs
-              value={tabIndex}
-              onChange={this.handleTabChange}
-              variant="fullWidth"
-              indicatorColor="secondary"
-              textColor="secondary"
-              aria-label="tab buttons"
-            >
-              <Tab icon={<ChatIcon />} label="Chat" />
-              <Tab icon={<DonutSmallIcon />} label="Status" />
-              <Tab icon={<CallIcon />} label="Calls" />
-            </Tabs>
-          </Paper>
+          <Paper
+            className={classes.footer}
+            component="footer"
+            elevation={3}
+          ></Paper>
         </Container>
       </React.Fragment>
     );
