@@ -13,9 +13,7 @@ class ErrorPage extends React.Component<
 > {
   readonly state: State = {};
 
-  componentDidMount() {
-    console.log("PRops==>", this.props);
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {}
 

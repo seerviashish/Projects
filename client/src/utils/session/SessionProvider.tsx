@@ -148,7 +148,7 @@ class SessionProvider extends React.Component<
    * @returns {boolean} true if token is expired
    */
   private isTokenExpired = (token: Token): boolean => {
-    return getTimeDifferenceWithCurrent(token.expires) <= 0;
+    return getTimeDifferenceWithCurrent(token.expires, "minutes") <= 0;
   };
 
   /**

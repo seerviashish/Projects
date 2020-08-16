@@ -11,15 +11,21 @@ import {
   Divider,
 } from "@material-ui/core";
 import {
-  ChatViewItemType,
-  MessageContent,
-  MessageInfo,
-  MessageType,
+  IMessageData,
+  IMessage,
+  IMessageContentType,
+  IMessageState,
+  IMessageContent,
 } from "src/utils/TypeDefinition";
+import {
+  getCalendarTimeFromTZ,
+  getTimeStampFromTZ,
+} from "src/utils/time-utils";
 
 type ChatViewItemProps = {
-  chatViewItem: ChatViewItemType;
+  chatViewItem: IMessageData;
   key: number;
+  userId?: string;
 };
 
 const styles = (theme: Theme) =>
@@ -28,57 +34,195 @@ const styles = (theme: Theme) =>
       margin: "5px 2px",
       width: "auto",
     },
-    inline: {
-      display: "inline",
+    primaryText: {
+      display: "block",
+    },
+    borderText: {
+      border: "1px solid black",
+      paddingRight: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
+    },
+    receiveTime: {
+      float: "right",
+      fontSize: "small",
+      color: "#2ECC71",
+      fontWeight: "bold",
+    },
+    normalTime: {
+      float: "right",
+      fontSize: "small",
     },
   });
 
-const getLastMessage = (messageContent: MessageContent[]) => {
-  if (messageContent.length > 0) {
-    let lastMessage: MessageInfo = messageContent[0].message[0];
-    messageContent[0].message.forEach((info: MessageInfo) => {
-      if (lastMessage.lineNum < info.lineNum) {
-        lastMessage = { ...info };
+type LastMessage = {
+  type: IMessageContentType;
+  state: IMessageState;
+  text: String;
+  time: String;
+  unreadCount: number;
+};
+
+const getLastMessage = (
+  messagesData: IMessageData,
+  userId: string | undefined
+) => {
+  const defaultTime = getCalendarTimeFromTZ(messagesData.updatedAt);
+  let lastMessage: LastMessage = {
+    type: IMessageContentType.TEXT,
+    state: IMessageState.SENT,
+    text: "",
+    time: defaultTime,
+    unreadCount: 0,
+  };
+  const length: number = messagesData.messages.length;
+  if (length > 0) {
+    let sortedMessages = messagesData.messages.sort(
+      (msg1: IMessage, msg2: IMessage) => {
+        return (
+          getTimeStampFromTZ(msg1.sentTime) - getTimeStampFromTZ(msg2.sentTime)
+        );
+      }
+    );
+    sortedMessages.forEach((message: IMessage) => {
+      if (
+        userId &&
+        message.recipient.userId === userId &&
+        message.state === IMessageState.RECEIVED
+      ) {
+        lastMessage.unreadCount = lastMessage.unreadCount + 1;
       }
     });
-    return lastMessage;
+    const lastMessageData: IMessage = sortedMessages[length - 1];
+    if (lastMessage.unreadCount > 0) {
+      lastMessage.state = IMessageState.RECEIVED;
+    } else {
+      switch (lastMessageData.state) {
+        case IMessageState.ERROR:
+          lastMessage.state = IMessageState.ERROR;
+          break;
+        case IMessageState.READ:
+          lastMessage.state = IMessageState.READ;
+          break;
+        case IMessageState.RECEIVED:
+          lastMessage.state =
+            lastMessageData.recipient.userId === userId
+              ? IMessageState.RECEIVED
+              : IMessageState.SENT;
+          break;
+        case IMessageState.SENT:
+          lastMessage.state = IMessageState.SENT;
+          break;
+        default:
+          lastMessage.state = IMessageState.SENT;
+          break;
+      }
+    }
+    const lastContent: IMessageContent[] = sortedMessages[length - 1].content;
+    const contentLength: number = lastContent.length;
+    if (contentLength > 0) {
+      const sortedLastContent = lastContent.sort(
+        (content1: IMessageContent, content2: IMessageContent) =>
+          content1.row - content2.row
+      );
+      const content: IMessageContent = sortedLastContent[contentLength - 1];
+      switch (content.type) {
+        case IMessageContentType.TEXT:
+          lastMessage.type = IMessageContentType.TEXT;
+          lastMessage.text = content.data;
+          break;
+        case IMessageContentType.VIDEO:
+          lastMessage.type = IMessageContentType.VIDEO;
+          lastMessage.text = "Video";
+          break;
+        case IMessageContentType.AUDIO:
+          lastMessage.type = IMessageContentType.AUDIO;
+          lastMessage.text = "Audio";
+          break;
+        case IMessageContentType.LINK:
+          lastMessage.type = IMessageContentType.LINK;
+          lastMessage.text = "Link";
+          break;
+        case IMessageContentType.DOCUMENT:
+          lastMessage.type = IMessageContentType.DOCUMENT;
+          lastMessage.text = "Document";
+          break;
+        case IMessageContentType.LOCATION:
+          lastMessage.type = IMessageContentType.LOCATION;
+          lastMessage.text = "Location";
+          break;
+        default:
+          lastMessage.type = IMessageContentType.TEXT;
+          lastMessage.text = "";
+          break;
+      }
+    }
   }
-  return "";
+  return lastMessage;
 };
 
 const ChatViewItem: React.FC<ChatViewItemProps & WithStyles<typeof styles>> = ({
   chatViewItem,
   classes,
   key,
+  userId,
 }) => {
-  const lastMessage = getLastMessage(chatViewItem.lastMessage.messageContent);
+  const lastMessage = getLastMessage(chatViewItem, userId);
   return (
     <>
       <ListItem key={key} className={classes.root}>
         <ListItemAvatar>
-          <Avatar alt={chatViewItem.userName} src={chatViewItem.profileUrl} />
+          <Avatar alt={chatViewItem.name} src={chatViewItem.profile} />
         </ListItemAvatar>
         <ListItemText
-          primary={chatViewItem.userName}
+          primary={
+            <Typography
+              component="span"
+              variant="body1"
+              color="textPrimary"
+              className={classes.primaryText}
+            >
+              {chatViewItem.name}
+              <Typography
+                component="span"
+                variant="body1"
+                color="textPrimary"
+                className={
+                  lastMessage.state === IMessageState.RECEIVED
+                    ? classes.receiveTime
+                    : classes.normalTime
+                }
+              >
+                {lastMessage.state === IMessageState.RECEIVED ? "• " : ""}
+                {lastMessage.time}
+              </Typography>
+            </Typography>
+          }
           secondary={
             <Typography
               component="span"
               variant="body2"
-              className={classes.inline}
               color="textPrimary"
+              className={
+                lastMessage.type === IMessageContentType.TEXT
+                  ? ""
+                  : classes.borderText
+              }
             >
-              {lastMessage && lastMessage.type === MessageType.DOCUMENT
-                ? "Document"
-                : ""}
-              {lastMessage && lastMessage.type === MessageType.IMAGE
-                ? "Image"
-                : ""}
-              {lastMessage && lastMessage.type === MessageType.VIDEO
-                ? "Video"
-                : ""}
-              {lastMessage && lastMessage.type === MessageType.TEXT
-                ? lastMessage.content
-                : ""}
+              {lastMessage.text}
+              {lastMessage.state === IMessageState.RECEIVED && (
+                <Typography
+                  component="span"
+                  variant="body1"
+                  color="textPrimary"
+                  className={
+                    lastMessage.state === IMessageState.RECEIVED
+                      ? classes.receiveTime
+                      : classes.normalTime
+                  }
+                >
+                  {lastMessage.unreadCount}
+                </Typography>
+              )}
             </Typography>
           }
         />

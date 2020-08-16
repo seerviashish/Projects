@@ -24,10 +24,11 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Consumer as SessionConsumer,
   User,
+  UserInfo,
 } from "src/utils/session/SessionProvider";
 import TabView from "src/components/TabView";
 import ChatView from "src/components/ChatView";
-import { ChatViewItemType, MessageType } from "src/utils/TypeDefinition";
+import { IMessageData } from "src/utils/TypeDefinition";
 
 enum MenuItemType {
   Profile = "Profile",
@@ -43,7 +44,7 @@ type Props = {
 type State = {
   anchorEl?: HTMLElement;
   tabIndex: number;
-  chatViewList: ChatViewItemType[];
+  chatViewList: IMessageData[];
 };
 
 const styles = (theme: Theme) =>
@@ -65,7 +66,7 @@ const styles = (theme: Theme) =>
       borderRadius: 0,
       position: "absolute",
       top: 100,
-      bottom: 60,
+      bottom: 0,
       right: 0,
       left: 0,
       zIndex: -1,
@@ -98,674 +99,435 @@ class HomePage extends React.Component<
     tabIndex: 0,
     chatViewList: [
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
+        updatedAt: "2020-08-18T13:54:53.451Z",
+        name: "Emma Abby",
+        profile: "/profiles/1.jpg",
+        userId: "emma.abby@gmail.com",
+        isGroup: false,
+        about: "Hey! I am using message.",
+        status: [
+          {
+            type: "IMAGE",
+            url: "/assets/dress.jpg",
+            id: "1e9966dd-ad72-4839-9a5b-7dd97d9b1181",
+            createdAt: "2020-08-16T09:02:23.598Z",
           },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
+          {
+            type: "VIDEO",
+            url: "/assets/test.mp4",
+            id: "e5e6343e-212b-45fa-96a5-a8e190803424",
+            createdAt: "2020-08-16T09:02:23.598Z",
           },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "daddasdlhajsd ajsdadajda",
-                  type: MessageType.TEXT,
-                },
-              ],
+          {
+            type: "IMAGE",
+            url: "/assets/dress.jpg",
+            id: "dd4acc18-e3be-4ce6-9962-381c85efd4c0",
+            createdAt: "2020-08-16T09:02:23.598Z",
+          },
+        ],
+        messages: [
+          {
+            id: "1e9966dd",
+            beforeId: "1pwe66dd",
+            inReply: "",
+            sender: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
             },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "1",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+            recipient: {
+              name: "Emma Abby",
+              userId: "emma.abby@gmail.com",
+            },
+            sentTime: "2020-08-16T12:02:00.163Z",
+            state: "READ",
+            content: [
+              {
+                row: 1,
+                type: "TEXT",
+                data: "Good Morning",
+              },
+              {
+                row: 2,
+                type: "TEXT",
+                data: "Hi! How are you?",
+              },
+            ],
+          },
+          {
+            id: "dd4acc18",
+            beforeId: "1e9966dd",
+            inReply: "",
+            sender: {
+              name: "Emma Abby",
+              userId: "emma.abby@gmail.com",
+            },
+            recipient: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
+            },
+            sentTime: "2020-08-16T12:04:00.163Z",
+            state: "READ",
+            content: [
+              {
+                row: 1,
+                type: "TEXT",
+                data: "Good Morning 🤩",
+              },
+              {
+                row: 2,
+                type: "TEXT",
+                data: "I am fine. What's up?",
+              },
+            ],
+          },
+          {
+            id: "dd4lcce8",
+            beforeId: "dd4acc18",
+            inReply: "",
+            sender: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
+            },
+            recipient: {
+              name: "Emma Abby",
+              userId: "emma.abby@gmail.com",
+            },
+            sentTime: "2020-08-16T12:05:00.163Z",
+            state: "RECEIVED",
+            content: [
+              {
+                row: 1,
+                type: "TEXT",
+                data: "Let's Go for party....",
+              },
+            ],
+          },
+          {
+            id: "ww4acc18",
+            beforeId: "dd4lcce8",
+            inReply: "",
+            sender: {
+              name: "Emma Abby",
+              userId: "emma.abby@gmail.com",
+            },
+            recipient: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
+            },
+            sentTime: "2020-08-16T12:08:00.163Z",
+            state: "RECEIVED",
+            content: [
+              {
+                row: 1,
+                type: "IMAGE",
+                data: "/assets/dress.jpg",
+              },
+              {
+                row: 2,
+                type: "TEXT",
+                data: "Be ready..",
+              },
+            ],
+          },
+        ],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
+        updatedAt: "2020-08-16T02:00:10.000Z",
+        profile: "/profiles/2.jpg",
+        userId: "lucy.smith@gmail.com",
+        name: "Lucy Smith",
+        isGroup: false,
+        about: "Hey! I am using message.",
+        status: [
+          {
+            type: "VIDEO",
+            url: "/assets/test.mp4",
+            id: "d77add7a-f892-4320-8439-592b6d7c5ea0",
+            createdAt: "2020-08-16T09:01:23.598Z",
           },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
+        ],
+        messages: [
+          {
+            id: "dwullae8",
+            beforeId: "dwckcc18",
+            inReply: "",
+            sender: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
             },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "17",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+            recipient: {
+              name: "Lucy Smith",
+              userId: "lucy.smith@gmail.com",
+            },
+            sentTime: "2020-08-16T12:10:00.163Z",
+            state: "RECEIVED",
+            content: [
+              {
+                row: 1,
+                type: "TEXT",
+                data: "Let's Go for party....",
+              },
+            ],
+          },
+          {
+            id: "ew25er18",
+            beforeId: "dwullae8",
+            inReply: "",
+            sender: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
+            },
+            recipient: {
+              name: "Lucy Smith",
+              userId: "lucy.smith@gmail.com",
+            },
+            sentTime: "2020-08-16T12:15:00.163Z",
+            state: "RECEIVED",
+            content: [
+              {
+                row: 1,
+                type: "IMAGE",
+                data: "/assets/dress.jpg",
+              },
+              {
+                row: 2,
+                type: "DOCUMENT",
+                data: "/assets/doc123.pdf",
+              },
+              {
+                row: 3,
+                type: "TEXT",
+                data: "Be ready..",
+              },
+              {
+                row: 4,
+                type: "VIDEO",
+                data: "/assets/test.mp4",
+              },
+            ],
+          },
+        ],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
+        updatedAt: "2020-08-13T02:20:07.000Z",
+        profile: "/profiles/3.jpg",
+        name: "Ava Johnson",
+        userId: "ava.johnson@gmail.com",
+        about: "Hey! I am using message.",
+        isGroup: false,
+        messages: [
+          {
+            id: "dwull21e8",
+            beforeId: "d51ckcc18",
+            inReply: "",
+            sender: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
             },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "16",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+            recipient: {
+              name: "Ava Johnson",
+              userId: "ava.johnson@gmail.com",
+            },
+            sentTime: "2020-08-16T12:18:00.163Z",
+            state: "SENT",
+            content: [
+              {
+                row: 1,
+                type: "TEXT",
+                data: "Let's Go for party....",
+              },
+            ],
+          },
+        ],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "15",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-07-12T02:00:07.000Z",
+        profile: "/profiles/4.jpg",
+        name: "Amelia Williams",
+        userId: "amelia.williams@gmail.com",
+        about: "Hey! I am using message.",
+        isGroup: false,
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "14",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-08-16T02:00:07.000Z",
+        name: "Maya Brown",
+        profile: "/profiles/5.jpg",
+        userId: "maya.brown@gmail.com",
+        about: "Busy",
+        isGroup: false,
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "13",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-02-11T02:10:07.000Z",
+        name: "Ruby Miller",
+        profile: "/profiles/10.jpg",
+        userId: "ruby.miller@gmail.com",
+        about: "Sleeping",
+        isGroup: false,
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
+        updatedAt: "2020-08-16T04:05:07.000Z",
+        name: "Vivian Davis",
+        profile: "/profiles/6.jpg",
+        about: "Hey! I am using message.",
+        userId: "vivian.davis@gmail.com",
+        status: [],
+        messages: [
+          {
+            id: "dwqop21e8",
+            beforeId: "d51ckc18",
+            inReply: "",
+            sender: {
+              name: "Ashish",
+              userId: "5f350b57dec76f5b846844d3",
             },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "12",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+            recipient: {
+              name: "Vivian Davis",
+              userId: "vivian.davis@gmail.com",
+            },
+            sentTime: "2020-08-16T12:25:00.163Z",
+            state: "SENT",
+            content: [
+              {
+                row: 1,
+                type: "TEXT",
+                data: "Let's Go for party....",
+              },
+            ],
+          },
+        ],
+        isGroup: false,
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "11",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-08-15T02:10:07.000Z",
+        name: "Bella Garcia",
+        profile: "/profiles/7.jpg",
+        about: "Hey! I am using message.",
+        userId: "bella.garcia@gmail.com",
+        isGroup: false,
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "10",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-07-16T02:00:07.000Z",
+        name: "Audey Rodriguez",
+        profile: "/profiles/8.jpg",
+        about: "Hey! I am using message.",
+        userId: "audey.rodriguez@gmail.com",
+        isGroup: false,
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "9",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-07-12T08:00:07.000Z",
+        name: "Cayde Wilson",
+        profile: "/profiles/9.jpg",
+        userId: "cayde.wilson@gmail.com",
+        about: "Focused",
+        isGroup: false,
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "8",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-07-13T08:00:07.000Z",
+        name: "Kace Martinez",
+        profile: "/profiles/10.jpg",
+        about: "Hey! I am using message.",
+        isGroup: false,
+        userId: "kace.martinez@gmail.com",
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "7",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-07-22T08:00:07.000Z",
+        name: "Saeed Anderson",
+        profile: "/profiles/3.jpg",
+        about: "Hey! I am using message.",
+        isGroup: false,
+        userId: "saeed@gmail.com",
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "6",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        updatedAt: "2020-07-14T08:00:07.000Z",
+        name: "Mdaf Taylor",
+        profile: "/profiles/10.jpg",
+        about: "Party Time!!",
+        isGroup: false,
+        userId: "mdaf@gmail.com",
+        messages: [],
+        status: [],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
+        updatedAt: "2020-07-12T08:00:07.000Z",
+        name: "Sunday Tours",
+        about: "Invite friends to join this group via link!!",
+        isGroup: true,
+        profile: "/profiles/10.jpg",
+        groupId: "group1",
+        messages: [],
+        status: [],
+        members: [
+          {
+            name: "Ashish",
+            profile: "/profiles/3.jpg",
+            role: "ADMIN",
+            userId: "5f350b57dec76f5b846844d3",
           },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
+          {
+            name: "Bella Garcia",
+            profile: "/profiles/4.jpg",
+            role: "USER",
+            userId: "bella.garcia@gmail.com",
           },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "5",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        ],
       },
       {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
+        updatedAt: "2020-07-12T08:00:07.000Z",
+        name: "Meeting Talk",
+        about: "Meeting time tomorrow from 2:00pm to 3:00pm",
+        isGroup: true,
+        profile: "/profiles/2.jpg",
+        groupId: "group2",
+        messages: [],
+        status: [],
+        members: [
+          {
+            name: "Amelia Williams",
+            role: "ADMIN",
+            userId: "amelia.williams@gmail.com",
+            profile: "/profiles/3.jpg",
           },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
+          {
+            name: "Ashish",
+            role: "ADMIN",
+            profile: "/profiles/2.jpg",
+            userId: "5f350b57dec76f5b846844d3",
           },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "4",
-        profileUrl: "profile.jpeg",
-        isRead: false,
-      },
-      {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
+          {
+            name: "Bella Garcia",
+            role: "USER",
+            profile: "/profiles/5.jpg",
+            userId: "bella.garcia@gmail.com",
           },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
+          {
+            name: "Emma Abby",
+            role: "USER",
+            profile: "/profiles/7.jpg",
+            userId: "emma.abby@gmail.com",
           },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "3",
-        profileUrl: "profile.jpeg",
-        isRead: false,
-      },
-      {
-        lastMessage: {
-          sender: {
-            name: "Rohan Manga",
-            email: "rohan@gmail.com",
-          },
-          recipient: {
-            name: "Ashish Chaudhary",
-            email: "ashish@gmail.com",
-            isGroup: false,
-            groupId: "",
-          },
-          messageContent: [
-            {
-              id: "1",
-              message: [
-                {
-                  lineNum: 1,
-                  content: "Hi Hello! Whats Ap!",
-                  type: MessageType.TEXT,
-                },
-                {
-                  lineNum: 2,
-                  content: "dada",
-                  type: MessageType.TEXT,
-                },
-              ],
-            },
-          ],
-          sentTime: "",
-          receivedTime: "",
-          isRead: false,
-          isReceived: false,
-        },
-        userName: "Ashish Chaudhary",
-        userId: "2",
-        profileUrl: "profile.jpeg",
-        isRead: false,
+        ],
       },
     ],
   };
 
-  componentDidMount() {
-    console.log("PRops==>", this.props);
-  }
+  componentDidMount() {}
 
   componentWillUnmount() {}
 
@@ -802,7 +564,7 @@ class HomePage extends React.Component<
   render() {
     const { classes } = this.props;
     const { anchorEl, tabIndex, chatViewList } = this.state;
-    console.log("==>tabIndex ==> ", tabIndex);
+    const userInfo: UserInfo | undefined = this.props.user?.user ?? undefined;
     return (
       <React.Fragment>
         <CssBaseline />
@@ -877,17 +639,12 @@ class HomePage extends React.Component<
             variant="outlined"
           >
             <TabView active={tabIndex === 0}>
-              <ChatView chatViewList={chatViewList} />
+              <ChatView chatViewList={chatViewList} userId={userInfo?.id} />
             </TabView>
             <TabView active={tabIndex === 1}>
               <p>test 2</p>
             </TabView>
           </Paper>
-          <Paper
-            className={classes.footer}
-            component="footer"
-            elevation={3}
-          ></Paper>
         </Container>
       </React.Fragment>
     );
