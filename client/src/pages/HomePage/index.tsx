@@ -1,5 +1,4 @@
 import React from "react";
-import "./index.css";
 import {
   Theme,
   createStyles,
@@ -102,7 +101,7 @@ class HomePage extends React.Component<
         updatedAt: "2020-08-18T13:54:53.451Z",
         name: "Emma Abby",
         profile: "/profiles/1.jpg",
-        userId: "emma.abby@gmail.com",
+        userId: "5f397fcab69b6872ff3ae551",
         isGroup: false,
         about: "Hey! I am using message.",
         status: [

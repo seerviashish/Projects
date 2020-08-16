@@ -319,7 +319,9 @@ class SessionProvider extends React.Component<
   componentDidMount() {
     this.sessionStateData().then((sessionStateDetail: SessionStateDetail) => {
       const state: State = this.getStateDetailBySession(sessionStateDetail);
-      this.setState({ ...state });
+      this.setState({ ...state }, () => {
+        console.log("USER ++> ", this.state.user);
+      });
     });
   }
   render() {

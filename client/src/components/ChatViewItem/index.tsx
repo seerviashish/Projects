@@ -21,6 +21,8 @@ import {
   getCalendarTimeFromTZ,
   getTimeStampFromTZ,
 } from "src/utils/time-utils";
+import { withRouter, RouteComponentProps } from "react-router-dom";
+import { MESSAGES } from "src/constants/routes";
 
 type ChatViewItemProps = {
   chatViewItem: IMessageData;
@@ -160,16 +162,19 @@ const getLastMessage = (
   return lastMessage;
 };
 
-const ChatViewItem: React.FC<ChatViewItemProps & WithStyles<typeof styles>> = ({
-  chatViewItem,
-  classes,
-  key,
-  userId,
-}) => {
+const ChatViewItem: React.FC<
+  ChatViewItemProps & WithStyles<typeof styles> & RouteComponentProps
+> = ({ chatViewItem, classes, key, userId, history }) => {
   const lastMessage = getLastMessage(chatViewItem, userId);
   return (
     <>
-      <ListItem key={key} className={classes.root}>
+      <ListItem
+        key={key}
+        className={classes.root}
+        onClick={(e) => {
+          history.push(`/messages/${chatViewItem.userId}`);
+        }}
+      >
         <ListItemAvatar>
           <Avatar alt={chatViewItem.name} src={chatViewItem.profile} />
         </ListItemAvatar>
@@ -232,4 +237,4 @@ const ChatViewItem: React.FC<ChatViewItemProps & WithStyles<typeof styles>> = ({
   );
 };
 
-export default withStyles(styles)(ChatViewItem);
+export default withRouter(withStyles(styles)(ChatViewItem));

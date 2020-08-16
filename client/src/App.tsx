@@ -3,7 +3,7 @@ import AppThemeProvider from "./utils/theme";
 import LocaleProvider from "./utils/i18n";
 import SessionProvider from "./utils/session/SessionProvider";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { HOME, SIGN_IN, SIGN_UP, ERROR } from "./constants/routes";
+import { HOME, SIGN_IN, SIGN_UP, ERROR, MESSAGES } from "./constants/routes";
 import WaitingComponent from "./components/WaitingComponent";
 import AuthenticatedRoutes from "./utils/route/AuthenticatedRoutes";
 import UnauthenticatedRoutes from "./utils/route/UnauthenticatedRoutes";
@@ -19,6 +19,10 @@ const SignInPage = lazy(() =>
 
 const SignUpPage = lazy(() =>
   import(/* webpackChunkName: 'SignInPage' */ "./pages/SignUpPage")
+);
+
+const MessagePage = lazy(() =>
+  import(/* webpackChunkName: 'Messages' */ "./pages/MessagePage")
 );
 
 const ErrorPage = lazy(() =>
@@ -52,6 +56,11 @@ const App: React.FC = () => {
                   exact
                   path={HOME}
                   component={WaitingComponent(HomePage)}
+                />
+                <AuthenticatedRoutes
+                  exact
+                  path={MESSAGES}
+                  component={WaitingComponent(MessagePage)}
                 />
               </Switch>
             </Router>
