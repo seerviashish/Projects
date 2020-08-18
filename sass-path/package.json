@@ -1,0 +1,14 @@
+{
+  "name": "sass-path",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "sass": "^1.26.10",
+    "serve": "^11.3.2"
+  },
+  "scripts": {
+    "serve": "serve -s public",
+    "sass:build": "sass src/style.scss public/style.css",
+    "sass:watch": "sass --watch src/style.scss public/style.css"
+  }
+}
