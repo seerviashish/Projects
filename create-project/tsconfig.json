@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "importHelpers": true,
+    "module": "commonjs",
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "outDir": "lib",
+    "rootDir": "src",
+    "allowJs": true,
+    "strict": true,
+    "target": "ES2017"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["coverage", "node_modules", "!node_modules/@types"]
+}

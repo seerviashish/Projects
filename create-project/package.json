@@ -1,0 +1,63 @@
+{
+  "name": "create-project",
+  "description": "create-project is cli app to setup new project within Projects repository",
+  "homepage": "https://github.com/Simxe/projects/tree/projects/bash/create-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": {
+    "name": "Ashish Seervi",
+    "email": "seerviashish17@gmail.com",
+    "url": "https://seerviashish.github.io"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Simxe/projects.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Simxe/projects/issues"
+  },
+  "bin": {
+    "create-project": "./bin/cli"
+  },
+  "engines": {
+    "node": ">= 10"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "rm -rf lib && tsc -b",
+    "start": "rm -rf lib && tsc -w",
+    "test": "nyc --extension .ts mocha -r ts-node/register --forbid-only \"test/**/*.test.ts\"",
+    "cover": "yarn run cover:test && yarn run cover:report",
+    "cover:test": "yarn run test",
+    "cover:report": "nyc report --reporter=lcov",
+    "report:view": "serve -s ./coverage/lcov-report"
+  },
+  "dependencies": {
+    "@types/clear": "^0.1.0",
+    "@types/figlet": "^1.2.0",
+    "@types/gradient-string": "^1.1.1",
+    "@types/inquirer": "^7.3.0",
+    "@types/meow": "^5.0.0",
+    "chalk": "^4.1.0",
+    "clear": "^0.1.0",
+    "execa": "^4.0.3",
+    "figlet": "^1.5.0",
+    "gradient-string": "^1.2.0",
+    "inquirer": "^7.3.3",
+    "meow": "^7.1.0",
+    "ora": "^5.0.0",
+    "serve": "^11.3.2",
+    "typescript": "^3.9.7"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.12",
+    "@types/mocha": "^8.0.2",
+    "@types/node": "^14.0.27",
+    "chai": "^4.2.0",
+    "coverage": "^0.4.1",
+    "mocha": "^8.1.1",
+    "nyc": "^15.1.0",
+    "ts-node": "^8.10.2"
+  },
+  "types": "lib/index.d.ts"
+}

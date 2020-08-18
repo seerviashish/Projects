@@ -1,0 +1,21 @@
+{
+  "window.zoomLevel": 1,
+  "editor.minimap.enabled": true,
+  "editor.codeLens": true,
+  "editor.wordWrapColumn": 80,
+  "editor.wordWrap": "on",
+  "editor.formatOnSave": true,
+  "editor.renderIndentGuides": true,
+  "editor.tabSize": 2,
+  "git.autofetch": true,
+  "eslint.enable": true,
+  "git.enableSmartCommit": true,
+  "npm.autoDetect": "on",
+  "workbench.iconTheme": "vscode-icons",
+  "vsicons.presets.jsOfficial": true,
+  "path-intellisense.absolutePathToWorkspace": true,
+  "jest.debugCodeLens.showWhenTestStateIn": ["fail", "unknown", "pass", "skip"],
+  "jest.pathToJest": "CI=true && yarn test -- --coverage",
+  "jest.showCoverageOnLoad": true,
+  "eslint.packageManager": "yarn"
+}
