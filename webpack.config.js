@@ -74,7 +74,15 @@ module.exports = function () {
       extensions: [".ts", ".js"],
     },
     module: {
-      rules: [{ test: /\.tsx?$/, loader: "ts-loader" }],
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+          options: {
+            configFile: "worker/tsconfig.json",
+          },
+        },
+      ],
     },
     output: {
       path: isEnvProduction ? buildFolderPath : devBuildFolderPath,
@@ -85,9 +93,16 @@ module.exports = function () {
     optimization: {
       minimize: isEnvProduction,
     },
+    // resolve: {
+    //   plugins: [
+    //     new TsconfigPathsPlugin({
+    //       configFile: "tsconfig.json",
+    //     }),
+    //   ],
+    // },
     plugins: [
       new WorkboxWebpackPlugin.GenerateSW({
-        swDest: `${isEnvProduction ? "build" : "public"}/service-worker.js`,
+        swDest: "service-worker.js",
         clientsClaim: true,
         exclude: [/\.map$/, /asset-manifest\.json$/],
         navigateFallback: publicUrlOrPath + "index.html",
