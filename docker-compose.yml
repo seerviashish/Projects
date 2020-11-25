@@ -1,0 +1,21 @@
+version: "3"
+services:
+  tictactoe-server:
+    image: seerviashish17/tictactoe-server:v1.0.0
+    ports:
+      - 8000:8000
+    restart: always
+    healthcheck:
+      test: "exit 0"
+    volumes:
+      - tictactoe-service-data:/demo
+      - ./logs:/demo/logs:rw
+  tictactoe-client:
+    image: seerviashish17/tictactoe-client:v1.0.0
+    ports:
+      - 3000:80
+    restart: always
+    healthcheck:
+      test: "exit 0"
+volumes:
+  tictactoe-service-data:
